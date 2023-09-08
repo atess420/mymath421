@@ -3,3 +3,4 @@
 ### Assignments
 
 - [Assignment 1](Example--Assignment-1.html)
+- [Assignment 2](assignment2.html)
