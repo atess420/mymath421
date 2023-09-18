@@ -129,7 +129,8 @@ x %>% sum %>% sqrt
 x %>% log %>% sum %>% sqrt
 
 # log base 2 of 16
-log(16, 2)
+# log(16, 2)
+16 %>% log(2)
 ```
 
 -------
