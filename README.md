@@ -7,6 +7,7 @@
 - [Assignment 3](assignment3.html)
 - [Assignment 4](assignment4.html)
 - [Assignment 5](assignment5.html)
+- [Assignment 6](assignment6.html)
 
 ### Extra Credits
 
