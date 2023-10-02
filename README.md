@@ -8,8 +8,12 @@
 - [Assignment 4](assignment4.html)
 - [Assignment 5](assignment5.html)
 - [Assignment 6](assignment6.html)
+- [Assignment 7](assignment7.html)
 
 ### Extra Credits
 
 - [Assignment 4 Extra Credit](assignment4_extra_credits.html)
 - [Assignment 5 Extra Credit](assignment5_extra_credits.html)
+
+### Plots
+- [Link to the plot](abc.png)
