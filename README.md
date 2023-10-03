@@ -15,6 +15,7 @@
 
 - [Assignment 4 Extra Credit](assignment4_extra_credits.html)
 - [Assignment 5 Extra Credit](assignment5_extra_credits.html)
+- [Assignment 7 Extra Credit](assignment7_extra_credits.html)
 
 ### Plots
 - [Link to the plot](abc.png)
