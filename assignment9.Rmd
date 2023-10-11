@@ -58,7 +58,8 @@ df %>%
   filter(Country=="United States of America"|Country=="Brazil"|Country=="India") %>% 
   ggplot(aes(x=Date_reported, y=Cumulative_deaths, color = Country))+
   geom_line()+
-  transition_reveal(Cumulative_deaths)
+  transition_reveal(Cumulative_deaths)+
+  labs(title = "Number of Deaths in Three Countries", x= "Date Reported", y="Cumulative Deaths", caption = "Number of deaths in the three countries")
   
 ```
 
@@ -78,7 +79,8 @@ df %>%
   filter(Country=="United States of America"|Country=="Italy"|Country=="Mexico") %>% 
   ggplot(aes(x=Date_reported, y=death_per_cases, color = Country))+
   geom_line()+
-  transition_reveal(Cumulative_deaths)
+  transition_reveal(Cumulative_deaths)+
+  labs(title = "Deaths in U.S., Mexico, and Italy", x= "Date Reported", y="Deaths per Cases", caption = "Deaths per cases in U.S., Mexico, and Italy")
 ```
 
 5. Import the following data https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv
@@ -98,6 +100,6 @@ df2 %>%
   geom_line()+
   geom_point(size=1)+
   transition_reveal(date)+
-  labs(caption = 'Total vaccinations per hundred by level of income')
+  labs(title = "Total Vaccinations per Hundred", x= "Date", y="Total Vaccinations (per Hundred)", caption = 'Total vaccinations per hundred by level of income')
 ```
 
