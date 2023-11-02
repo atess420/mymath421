@@ -1,0 +1,650 @@
+---
+title: "Statistical Analysis with R Midterm"
+author: "Allison Tessman"
+date: "2023-10-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instruction
+
+The midterm has two components: the Rmarkdown notebook (html) and the presentation.  We will do the presentation in class. Post both the notebook and the presentation on your Github page. 
+
+**The notebook:** The notebook should be created using `rmarkdown` or Quarto (like other assignments). The notebook should have a title. 
+
+
+**The Presentation:** Present your results in 5-10 minutes. To make the presentation using Rmarkdown, do the follows: 
+
+    - In Rstudio -> File -> New File -> R markdown
+    
+    - In the left panel, click to Presentation -> Click OK
+    
+    - Now you have an Rmarkdown that can be knitted to be a html presentation 
+    
+- You can also use the Rmd templates of the class slides. 
+
+- You can also use Quarto to create the presentation: *In Rstudio -> File -> New File -> Quarto Presentation...*
+    
+- You do not need to rerun all the codes for the presentation. For example, to show the model comparison, you just need to show the image of the model comparison instead of running all the models again.
+    
+- To inset an image in a slide, use  `![](image.png)`
+
+- To scale images, you can use `![](image.png){width="60%"}` or follow these below instructions. 
+    
+    - https://bookdown.org/yihui/rmarkdown-cookbook/figure-size.html
+    
+    - http://zevross.com/blog/2017/06/19/tips-and-tricks-for-working-with-images-and-figures-in-r-markdown-documents/
+
+- To turn off message and warning of a code cell, use:  `{r, message=FALSE, warning=FALSE}` for the cell. 
+
+**What to present**:
+
+  - Present Part 2 - Visualization
+  
+  - Present Question Question 4, 5 and 6 in Part 3.  
+  
+  - Present any errors/challenges you run into and how you fix/overcome them. 
+
+**Data:**  
+
+The data for the mid-term project is the Rhode Island Department of Health Hospital Discharge Data.  Each row of the data presents a patient. 
+
+Link: https://drive.google.com/open?id=15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ 
+
+-------
+
+## I. Data Wranggling
+
+1. Download the data file `hdd0318cy.sas7bdat`.  
+
+2. Use `read_sas` in library `haven` to read the data. 
+
+```{r}
+library(haven)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+
+# df <- read_sas("~/Statistical Analysis with R/hdd0318cy.sas7bdat", 
+#     NULL)
+
+df <- read_csv("~/Statistical Analysis with R/midterm.csv")
+
+```
+    
+3. Filter the data to have only patients of the year 2018 (`yod=18`)
+
+```{r}
+df <- df %>% 
+  filter(yod == 18)
+```
+    
+4. Select to work with only following variables: 
+
+```{r, eval=FALSE}
+                      "yod", "payfix","pay_ub92","age",  
+                      "sex","raceethn","provider","moa", 
+                      "yoa","mod","admtype", "asource" , 
+                      "preopday" ,"los", "service" , "icu","ccu",    
+                      "dispub92", "payer"  ,"drg","trandb", 
+                      "randbg","randbs","orr", "anes","seq",   
+                      "lab","dtest", "ther","blood","phar", 
+                      "other","patcon","bwght","total","tot" ,  
+                      "ecodub92","b_wt","pt_state","diag_adm","ancilar" ,
+                      "campus","er_fee","er_chrg","er_mode","obs_chrg",
+                      "obs_hour","psycchrg","nicu_day"
+```
+ 
+```{r}
+df <- df %>% 
+  select("yod", "payfix","pay_ub92","age",  
+                      "sex","raceethn","provider","moa", 
+                      "yoa","mod","admtype", "asource" , 
+                      "preopday" ,"los", "service" , "icu","ccu",    
+                      "dispub92", "payer"  ,"drg","trandb", 
+                      "randbg","randbs","orr", "anes","seq",   
+                      "lab","dtest", "ther","blood","phar", 
+                      "other","patcon","bwght","total","tot" ,  
+                      "ecodub92","b_wt","pt_state","diag_adm","ancilar" ,
+                      "campus","er_fee","er_chrg","er_mode","obs_chrg",
+                      "obs_hour","psycchrg","nicu_day")
+```
+
+
+*Notice*:  You may want to save the current data to your computer for easy access later.  To save the data file use `write_csv(df, 'midterm.csv')`, for example.  
+
+```{r}
+write_csv(df, "~/Statistical Analysis with R/midterm.csv")
+```
+
+
+5. What are variables that have missing values?
+
+```{r}
+colSums(is.na(df))
+#payfix, preopday, obs_hour, nicu_day
+
+```
+ 
+6. Remove all variables with missing values. 
+
+```{r}
+df <- df %>% 
+  select(-payfix, -preopday, -obs_hour, -nicu_day)
+
+```
+ 
+7. Refer to the data description in the file `HDD2015-18cy6-20-19.docx`, which variable recording the month of admission?, which variable recording the month of discharge?
+
+```{r}
+#The variable recording the month of admission: moa
+
+#The variable recording the month of discharge: mod
+
+```
+
+8. Which month admitted the most number of patients? Which month admitted the most number of male patients?
+
+```{r}
+#Most number of patients
+df %>% 
+  group_by(moa) %>% 
+  count(moa) %>% 
+  arrange(-n)
+#Most patients admitted in October
+
+#Most number of male patients
+df %>% 
+  filter(sex == "1") %>% 
+  group_by(moa) %>% 
+  count(moa) %>% 
+  arrange(-n)
+#Most male patients admitted in October
+```
+
+9. Which month has the most number of teenage female patients?
+
+```{r}
+df %>% 
+  filter(sex == "2") %>% 
+  filter(age >=13,
+         age<=19) %>% 
+  group_by(moa) %>%
+  count(moa) %>%
+  arrange(-n)
+
+#March has the most number of teenage female patients
+```
+
+10. Which provider has the most number of female patients in October? 
+
+```{r}
+df %>% 
+  filter(moa == "10",
+         sex == "2") %>% 
+  group_by(provider) %>% 
+  count(provider) %>% 
+  arrange(-n)
+
+#Provider 7205 has the most number of female patients in October
+```
+
+11. Are female patients older than male patients, on average? 
+
+```{r}
+df %>% 
+  group_by(sex) %>% 
+  summarise(aveAge = mean(age))
+
+#On average, male patients are older than female patients (51.5 vs 50.86)
+```
+
+12. Calculate the average age of patients by months. Which month has the oldest patients on average age?
+
+```{r}
+df %>% 
+  group_by(moa) %>% 
+  summarise(ave_Age = mean(age)) %>% 
+  arrange(-ave_Age)
+
+#January has the oldest patients on average
+```
+
+13. What is the name of the provider that has the highest total charge?
+
+```{r}
+df %>% 
+  group_by(provider) %>% 
+  summarise(max_charge = max(tot)) %>% 
+  arrange(-max_charge)
+
+#Provider 7214 has the highest total charge
+```
+
+14. What is the name of the provider that has the least total charge for teenage male on average?
+
+```{r}
+df %>% 
+  filter(sex == "1",
+         age >= "13",
+         age <= "19") %>% 
+  group_by(provider) %>% 
+  summarise(min_charge = min(tot)) %>% 
+  arrange(min_charge)
+
+#Provider 7216 has the least total charge for teenage males on average
+```
+
+15. Create a season (Spring, Summer, Fall, Winter) variable. Calculate the length of stays by season.  Which season has the longest length of stays on average?
+```{r}
+df <- df %>% 
+  mutate("Season" = case_when(moa %in% c("3","4","5") ~ 'Spring', moa %in% c("6","7","8") ~ 'Summer',moa %in% c("9","10","11") ~ 'Fall',moa %in% c("12","1","2") ~ 'Winter'))
+
+df %>% 
+  group_by(Season)%>% 
+  summarise(aveLength = mean(los)) %>% 
+  arrange(-aveLength)
+
+#Summer has the longest average length of stays
+```
+
+16. On average, how much a 20 year-old male get charged for staying 1 day in the Fall season?
+
+```{r}
+df %>% 
+  filter(sex == "1",
+         age == "20",
+         los == "1",
+         Season == "Fall") %>%
+  summarise(meanCharge = mean(tot))
+
+#A 20 year old male staying 1 day in the Fall gets charged on ave $16,511  
+```
+
+17. Write a paragraph to summarize the section and give your comments on the results. You could do some other calculations to support your points. 
+
+```{r}
+1514/6244
+
+# In this first section, data wrangling, the data was cleaned up to certain variables being included in the final data set, and variables with missing values were removed. In terms of results, it was found that the most patients are admitted in October (11,408) with 5,164 of those patients being male, so there were more female patients admitted in October than male patients (6,244 vs 5,164). In addition, of those 6,244 female patients admitted in October, 1,514 of them were admitted to Rhode Island Hospital (Provider 7205), which is about 24% of all the females admitted that month. The Women and Infants hospital has the highest total charge of $3,402,056 and the least total charge for teen males happened at Butler Hospital at $322. Lastly, after examining the length of stays within different seasons of the year, it was found that Summer has the largest average length of stays.
+```
+
+
+-------
+
+## II. Data Visualization
+
+Continue with the data from part I. 
+
+1. Provides at least 10 meaningful plots. Comments on the plots. All plots should have title, caption, appropriate labels on x and y-axis
+
+```{r}
+#Plot 1
+df <- df %>% 
+  mutate("Gender" = case_when(sex == "1" ~ "Male", sex == "2" ~"Female", TRUE~"Other"))
+
+plot1 <- df %>% 
+  ggplot()+
+  geom_boxplot(mapping = aes(x=age, y=Gender))+
+  labs(title = "Age vs Gender of Patients", x= "Age", y="Gender", caption = "Higher average age for males, but oldest patient was female and larger range of women's ages")
+ggsave(filename = "Age_vs_Gender.png", plot = plot1)
+
+plot1
+
+
+#Plot 2
+plot2 <- df %>% 
+  ggplot()+
+  geom_col(mapping = aes(x=moa, y=los, fill = Gender), position = "dodge")+
+  labs(title = "Month of Admission vs Length of Stay by Gender", x= "Month of Admission", y="Length of Stay", caption = "Male patients tend to have longer lengths of stays, but women have almost double the length of stay of men in the later months like November and December")
+ggsave(filename = "LosByMoa_Gender.png", plot = plot2)
+
+plot2
+
+#Plot 3
+plot3 <- df %>% 
+  ggplot() + 
+  geom_point(mapping=aes(x=age, y=los)) + facet_wrap(~Gender) +
+  labs(x='Age', 
+       y = 'Length of Stay', 
+       title = 'Length of Stay vs Age by Gender', caption = "Shows that there are some older women, but the length of stay stayed relatively similar by age based on male vs female. A young male has the longest stay compared to the females, but no large trend showing difference between one gender or another")
+ggsave(filename = "LengthofStaybyAge.png", plot = plot3)
+
+plot3
+
+#Plot 4
+plot4 <- df %>% 
+  ggplot() + 
+  geom_point(mapping=aes(x=los, y=tot)) +
+  facet_wrap(~provider) +
+  labs(x='Length of Stay', 
+       y = 'Total Charge', 
+       title = 'Total Charge vs Length of Stay by Provider', 
+       caption = "Provider 7214 has the most exponential growth with the total charge based on length of stay, where shorter stays are more expensive than other providers... 7214=Women and Infants")
+ggsave(filename = 'TotVsLosByProv.png', plot = plot4)
+
+plot4
+
+#Plot 5
+plot5 <- df %>% 
+  ggplot() + 
+  geom_point(mapping=aes(x=er_mode, y=tot)) + facet_wrap(~Gender) +
+  labs(x='Type of Arrival to Hospital', 
+       y = 'Total Charge', 
+       title = 'Type of arrival vs Total Charge by Gender', caption = "More expensive for men brought in by ambulance, and females had low cost when brought in by law enforcement or social services, where men it was more total cost")
+ggsave(filename = "ModeofArrival.png", plot = plot5)
+
+plot5
+
+#Plot 6
+plot6 <- df %>% 
+  ggplot()+
+  geom_histogram(mapping = aes(x=er_mode, color = Gender), position = "dodge")+
+  labs(title = "Type of Arrival by Gender", x= "Type of Arrival", y="Density", caption = "There is less information on mode of arrival for women, and slightly more men had personal or public transportation to the hospital")
+ggsave(filename = "ArrivalbyGender.png", plot = plot6)
+
+plot6
+
+#Plot 7
+data1 <- df %>% 
+  filter(pt_state %in% c("MA", "RI", "CT", "NH", "ME","VT"))
+data1 <- data1 %>% 
+  group_by(pt_state) %>% 
+  summarise(avetot = mean(tot))
+
+plot7 <- data1 %>%
+  ggplot()+
+  geom_col(mapping = aes(x = pt_state, y=avetot))+
+  labs(title = "Ave New England Physical Therapy Total Charges by State", x = "Physical Therapy State", y = "Ave Total Charges", caption = "Maine has the highest ave total charge of about $150,000, with the other New England states averages are all between $25,000 and $50,000")
+
+plot7
+
+#Plot 8
+df$provider1 <- case_when(df$provider == 7201 ~ "Newport", df$provider == 7202 ~ "St. Joseph Health Services of RI",df$provider == 7203 ~ "Memorial",df$provider == 7204 ~ "Miriam",df$provider == 7205 ~ "Rhode Island Hospital",df$provider == 7206 ~ "Roger Williams",df$provider == 7209 ~ "South County",df$provider == 7210 ~ "Kent County",df$provider == 7211 ~ "Westerly",df$provider == 7212 ~ "Rehab of RI",df$provider == 7213 ~ "Landmark Medical Center",df$provider == 7214 ~ "Women and Infants",df$provider == 7215 ~ "Bradley",df$provider == 7216 ~ "Butler",)
+
+plot8 <- df %>% 
+  ggplot() + 
+  geom_col(mapping=aes(y=provider1,x = tot, fill=Season)) +
+  labs(x='Total Charge', 
+       y='Name of Provider',
+       fill = 'Season', 
+       title = 'Total Charge vs Name of Provider by Season', 
+       caption = "Rhode Island Hospital has the most total charge, and is consistent in amount for all seasons. All seasons have relatively equal total charges")
+
+plot8
+
+#Plot 9
+data2 <- df %>% 
+  group_by(provider1) %>% 
+  summarise(avelos = mean(los))
+
+plot9 <- data2 %>%
+  ggplot()+
+  geom_col(mapping = aes(y = provider1, x=avelos))+
+  labs(title = "Ave Length of Stay by Provider", x = "Provider", y = "Length of Stay", caption = "Bradley Hospital has the longest average length of stay (about 25 days), but the other hospitals have average lengths of stays around 3-8 days")
+
+plot9
+
+#Plot 10
+data3 <- df %>% 
+  filter(moa == "10")
+
+plot10 <- data3 %>%
+  ggplot()+
+  geom_col(mapping = aes(x = los, y=tot, fill = Gender))+
+  labs(title = "October Length of Stay vs Total Charge by Gender", x = "Length of Stay", y = "Total Charge", caption = "Women have more than double the total charge than men for some of the shortest lengths of stays, and men are responsible for the longest lengths of stays, but at a low total charge")
+ggsave(filename = "OctLosTotbyGend.png", plot = plot10)
+
+plot10
+```
+
+2. Make an animation plot. 
+
+```{r}
+library(gganimate)
+library(ggplot2)
+
+mean(df$age)
+
+df$avgAge <- case_when(df$age >= 51.14594 ~"Above Average",df$age < 51.14594 ~"Below Average")
+
+df$trandb <- as.numeric(df$trandb)
+data4 <- df %>% group_by(moa,Gender,avgAge, los) %>% summarise(meanRoom = mean(trandb, na.rm=TRUE))
+
+plot11 <- data4 %>% 
+  ggplot(aes(x=los, y=meanRoom, color = Gender)) + geom_col()+labs(x = "Length of Stay",y = "Average Room and Board Charges", title = 'moa {closest_state}',fill = "Gender")+
+    transition_states(moa)
+animate(plot11, nframes = 400)
+```
+
+3. Write a paragraph to summarize the section and give your comments on the results. 
+
+```{r}
+# # This data visualization section helped to put the data from section 1 into a more visual understanding of what the results were telling us. It also made it more clear to be able to see those specific instances and filters from section 1 when compared to more data across various categories. Some results included finding that males tended to have longer stays than women, but women had longer stays in some later months like October through December. There wasn't much of a trend in age and length of stay by gender, just that there were some older women versus men and men had longer stays in general regardless of age. In terms of providers, the Women and Infants hospital had positive exponential growth in total charges by the provider compared to more linear charges by other hospitals, and Bradley Hospital had the longest average length of stay of about 25 versus other hospitals at 3-8 days. There seemed to be less information on women patients, especially regarding their type of arrival to hospitals and emergency room, but men tended to have more instances of private or public transportation than emergency services. Lastly, women tend to have more than double total charges than men for some of the shortest lengths of stays, and when broken down into room and board specifically the difference between women and men in short stays was almost 2x more total charges for women than men, which might be explained by women giving birth and having expensive hospital stays for just a day to a few days.
+```
+
+-------
+
+## III. Predictive Models
+
+Continue with the data from part I. Make sure you do not have any missing values in the data. Use the follows as the target and input variables: 
+
+*Target Variable*: Create the target variable taking value of 
+
+  - `low` if the total charge of a patient (`tot`) is smaller than the median of the total charge, and
+
+  - `high` otherwise. 
+
+```{r}
+df %>% 
+  summarise(median(tot))
+
+library(tidyverse)
+library(dplyr)
+
+df$tot <- case_when(df$tot <16228 ~ 'low',
+  TRUE ~ 'high')
+
+df <- df %>% rename(target=tot) %>% 
+  mutate(target = as.factor(target),)
+
+df2 <- df %>% select(age,sex,raceethn,provider,moa,mod,admtype,campus, los,target)
+```
+
+*Input Variables*:
+
+  - "age","sex","raceethn","provider","moa","mod","admtype","campus", 'los'
+  
+-------
+
+1. Use `filter` function to filter out rows where `raceethn==''` or `admtype==''`. Make sure all the categorical variables are factor, numeric variables are numeric. Set Training : Testing Split = 10 : 90 
+
+```{r}
+library(caret)
+
+set.seed(2020)
+
+df2 <- df2 %>% filter(!raceethn == "")
+df2 <- drop_na(df2)
+                                            
+splitIndex <- createDataPartition(df2$target,
+                                  p=.1, 
+                                  list = FALSE)
+
+df_train <- df2[ splitIndex,]
+df_test <- df2[-splitIndex,]
+```
+
+2. Train a decision tree using `rpart`.  Plot the decision tree. Plot the variable importance ranked by the tree. 
+
+```{r}
+library(rpart)
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+
+#Plot decision tree
+library(rattle)
+fancyRpartPlot(tree_model)
+
+#Plot variable importance
+varImp <- tree_model$variable.importance
+barplot(varImp)
+
+#Accuracy=0.7956488
+pred <- predict(tree_model, df_test, type = "class")
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+
+cm$overall[1]
+```
+
+3. Using caret for this question. Set `Training Control` to be: Use Cross-Validation of 5 folds across all models.  Train & tune at least 2 different models (i.e. two different values for `method=` in the train function of caret).  Plot the hyper-parameter tuning plots for each model. 
+
+```{r}
+library(caret)
+
+#Model 1
+tuneGrid = expand.grid(maxdepth = 2:10)
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+tree_approach1 <- train(target~., data=df_train,
+                        method = "rpart2", 
+                        trControl = trControl,
+                        tuneGrid = tuneGrid)
+
+#Model 2
+tuneGrid = expand.grid(mtry = 2:4,
+                       splitrule = c('gini'),
+                       min.node.size = c(1:10))
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+tree_approach2 <- train(target~., data=df_train,
+                        method = "ranger",
+                        trControl = trControl,
+                        tuneGrid = tuneGrid)
+```
+
+4. Plot the comparison of the models in 3. 
+
+```{r}
+#Model 1- Accuracy = 0.8269192
+plot(tree_approach1)
+print(tree_approach1)
+
+pred <- predict(tree_approach1, df_test)
+cm1 <- confusionMatrix(data = pred, reference = df_test$target)
+
+cm1$overall[1]
+
+#Model 2- Accuracy = 0.8490412
+plot(tree_approach2)
+print(tree_approach2)
+
+pred <- predict(tree_approach2, df_test)
+cm2 <- confusionMatrix(data = pred, reference = df_test$target)
+
+cm2$overall[1]
+```
+
+5. What is your final selection for the model? Test the accuracy of your final model on the test data. 
+
+```{r}
+cm$overall[1]
+cm1$overall[1]
+cm2$overall[1]
+
+bwplot(resamples(list('RPart2' = tree_approach1,
+                      'Ranger' = tree_approach2
+                          )))
+
+# My final selection for the model is the tree_approach2 which is the Ranger process model. I choose this model because it has teh highest accuracy of 0.849.
+```
+
+6. Create another `target` variable (binary), decide the input variables and redo 1 to 5. 
+
+```{r}
+df %>% 
+  summarise(median(los))
+
+library(tidyverse)
+library(dplyr)
+
+df$los <- case_when(df$los <=3 ~ 'short',
+  TRUE ~ 'long')
+
+df <- df %>% 
+  rename(target1=los) %>% 
+  mutate(target1 = as.factor(target1),)
+
+df2 <- df %>% select(age,sex,raceethn,provider,moa,mod,admtype,campus, target1,target)
+
+
+library(caret)
+set.seed(2020) 
+
+df2 <- df2 %>% filter(!raceethn=='',!admtype=='') 
+splitIndex <- createDataPartition(df2$target1, p = .10, 
+                                  list = FALSE)
+df_train <- df2[ splitIndex,]
+df_test <- df2[-splitIndex,]
+
+tuneGrid = expand.grid(maxdepth = 2:10)
+trControl = trainControl(method = "cv",
+                         number = 5)
+#Model 3- Accuracy = 0.7309147
+tree_approach3 <- train(target1~.,
+                        data=df_train,
+                        method = "rpart2",
+                        trControl = trControl,
+                        tuneGrid = tuneGrid)
+
+plot(tree_approach3)
+print(tree_approach3)
+
+pred <- predict(tree_approach3, df_test)
+cm3 <- confusionMatrix(data = pred, reference = df_test$target1)
+
+cm3$overall[1]
+
+#Model 4- Accuracy = 0.733938
+tuneGrid = expand.grid(mtry = 2:4,
+                       splitrule = c('gini'),
+                       min.node.size = c(1:10))
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+tree_approach4 <- train(target1~.,
+                        data=df_train,
+                        method = "ranger",
+                        trControl = trControl,
+                        tuneGrid = tuneGrid)
+
+plot(tree_approach3)
+print(tree_approach3)
+
+pred <- predict(tree_approach4, df_test)
+cm4 <- confusionMatrix(data = pred, reference = df_test$target1)
+
+cm4$overall[1]
+
+bwplot(resamples(list('RPart2' = tree_approach3,
+                      'Ranger' = tree_approach4
+                          )))
+
+# My final selection for this new target variable model is the tree_approach4 which is the Ranger process model. I choose this model because it has the highest accuracy of 0.734. The original target is better in terms of accuracy.
+```
+
+7. Write a paragraph to summarize the section and give your comments on the results. 
+
+```{r}
+#In section 3, predictive models, I used 2 different target variables to create various models from the caret package to see which had more accuracy, and thus was the better model. The first target variable was 'tot', which measures the total charge for patients. After splitting the data into training and testing data, and then using 3 as the max depth, I was able to create 2 models which I compared using cross-validation with 5 folds and the methods "Rpart2" and "Ranger" from the Caret package. The ranger model ended up being the best and final selection for the model, because it had the higher accuracy. For the second target variable, 'los' was used to measure the length of stay for patients. After the same methods of splitting the data and creating models, the ranegr method was also the best fit selection because it also had the higher accuracy value. Of the two ranger method models, the one with total charge as the target had a better time predicting the 'tot' value than the 'los' value, because the accuracy was largest with tot as the target. 
+```
+
+-------
+

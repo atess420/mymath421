@@ -1,0 +1,119 @@
+---
+title: "Statistical Analysis with R Midterm Project"
+author: "Allison Tessman"
+date: "2023-11-02"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Part 2- Visualization
+- In part 1, in terms of results, it was found that the most patients are admitted in October (11,408) with 5,164 of those patients being male, so there were more female patients admitted in October than male patients (6,244 vs 5,164). 
+- In addition, of those 6,244 female patients admitted in October, 1,514 of them were admitted to Rhode Island Hospital (Provider 7205), which is about 24% of all the females admitted that month.
+- After seeing these results and more, I wanted to utilize the plots and visualization section to see this data on a broader spectrum to better understand them
+
+## Plot 1- Age vs Gender of Patients
+- Higher average age for males, but oldest patient was female and larger range of women's ages
+
+![](Age_vs_Gender.png){width="60%"}
+
+## Plot 2- Month of Admission vs Length of Stay by Gender
+- Male patients tend to have longer lengths of stays, but women have almost double the length of stay of men in the later months like November and December
+
+![](LosByMoa_Gender.png){width="60%"}
+
+## Plot 3- Length of Stay vs Age by Gender
+- Shows that there are some older women, but the length of stay stayed relatively similar by age based on male vs female. There's no large trend showing difference between one gender or another
+
+![](LengthofStaybyAge.png){width="60%"}
+
+## Plot 4- Total Charge vs Length of Stay by Provider
+- Provider 7214 has the most exponential growth with the total charge based on length of stay, where shorter stays are more expensive than other providers... 7214=Women and Infants
+
+![](TotVsLosByProv.png){width="60%"}
+
+## Plot 5- Type of arrival vs Total Charge by Gender
+- More expensive for men brought in by ambulance, and females had low cost when brought in by law enforcement or social services, where men it was more total cost
+
+![](ModeofArrival.png){width="60%"}
+
+## Plot 6- Type of Arrival by Gender
+- There is less information on mode of arrival for women, and slightly more men had personal or public transportation to the hospital
+
+![](ArrivalbyGender.png){width="60%"}
+
+## Plot 7- Ave New England Physical Therapy Total Charges by State
+- Maine has the highest ave total charge of about 150,000 with the other New England states averages are all between 25,000 and 50,000
+
+![](PTNewEngland.png){width="60%"}
+
+## Plot 8- Total Charge vs Name of Provider by Season
+- Rhode Island Hospital has the most total charge, and is consistent in amount for all seasons. All seasons have relatively equal total charges
+
+![](TotChargebySeas.png){width="60%"}
+
+## Plot 9- Ave Length of Stay by Provider
+- Bradley Hospital has the longest average length of stay (about 25 days), but the other hospitals have average lengths of stays around 3-8 days
+
+![](LosByProv.png){width="60%"}
+
+## Plot 10- October Length of Stay vs Total Charge by Gender
+- Women have more than double the total charge than men for some of the shortest lengths of stays, and men are responsible for the longest lengths of stays, but at a low total charge
+
+![](OctLosTotbyGend.png){width="60%"}
+
+## Animated Plot- Total Room and Board by Los
+- Women's shorter stays are more expensive than men every month
+- March and July had women with longer and most expensive stays
+
+![](download.gif){width="60%"}
+
+## Data Visualization Summary
+- Some results included finding that males tended to have longer stays than women, but women had longer stays in some later months like October through December. 
+- There wasn't much of a trend in age and length of stay by gender, just that there were some older women versus men and men had longer stays in general regardless of age. 
+- In terms of providers, the Women and Infants hospital had positive exponential growth in total charges by the provider compared to more linear charges by other hospitals, and Bradley Hospital had the longest average length of stay of about 25 versus other hospitals at 3-8 days.
+
+## Summary Contin.
+- There seemed to be less information on women patients, especially regarding their type of arrival to hospitals and emergency room
+- Men tended to have more instances of private or public transportation than emergency services.
+- Women tend to have more than double total charges than men for some of the shortest lengths of stays, and when broken down into room and board specifically the difference between women and men in short stays was almost 2x more total charges for women than men
+- This might be explained by women giving birth and having expensive hospital stays for just a day to a few days.
+
+## Part 3- Question 4 Model 1
+- This plot was made with a tree approach model using the "Rpart2" method with the target 'tot'
+- Accuracy = 0.8269192
+
+![](TreeApproach1.png){width="60%"}
+
+## Question 4 Model 2
+- This plot was made with a tree approach model using the "Ranger" method with the target 'tot'
+- Accuracy = 0.8500954
+
+![](TreeApproach2.png){width="60%"}
+
+## Part 3- Question 5 Results
+- Rpart = 0.7956488, Rpart2 = 0.8269192, Ranger = 0.8500954
+- My final selection for the model is the tree_approach2 which is the Ranger process model. I choose this model because it has the highest accuracy of 0.85.
+
+![](BestFitSelection.png){width="60%"}
+
+## Part 3- Question 6 Plot
+![](NewTargetPlot.png){width="60%"}
+
+## Question 6 Results
+- New target variable: los
+- Rpart2 = 0.7309147, Ranger = 0.7347657
+- My final selection for this new target variable model is the tree_approach4 which is the Ranger process model. I choose this model because it has the highest accuracy of 0.734. The original target is better in terms of accuracy.
+
+![](NewTargetBestFitSelect.png){width="60%"}
+
+## Errors/Challenges I Faced
+- Challenge with creating mean values for plots: Caused my plot to save as a list rather than a gg element
+- Errors with forgetting when I changed the names of variables, being off by a number or letter referencing a different data frame
+
+- I overcame this by researching the issue further, and making sure that for my plots I created a new reference for the data and used that to make my plot from
+- I overcame other errors by reviewing my code, and slowing down when copying over names of data frames in each step
+
+## Thank you for listening!

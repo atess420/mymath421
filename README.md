@@ -15,6 +15,11 @@
 - [Assignment 11](assignment11.html)
 - [Assignment 12](assignment12.html)
 
+### Midterm
+
+- [Midterm Project](Midterm-Project.html)
+- [Midterm Presentation](Midterm-Presentation.html)
+
 ### Extra Credits
 
 - [Assignment 4 Extra Credit](assignment4_extra_credits.html)
