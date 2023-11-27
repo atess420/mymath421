@@ -33,7 +33,7 @@ knitr::opts_chunk$set(message = FALSE)
 
 Hint: [Similar function](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#28)
 
-```{r}
+```{r, warning=FALSE}
 library(dplyr)
 library(tidyverse)
 library(tidyr)
@@ -90,7 +90,7 @@ colSums(is.na(d1))
 
 Hint: Use If-statement to combine the function in Problem 1 and the function in [this example](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#28)
 
-```{r}
+```{r, warning=FALSE}
 mean_impute <- function(x)
 {
   if(is.numeric(x))
@@ -136,7 +136,7 @@ colSums(is.na(d1))
 
 Hint: [Similar function](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#33)
 
-```{r}
+```{r, warning=FALSE}
 bar_plot <- function(d)
 {
   library(ggplot2)
@@ -165,7 +165,7 @@ bar_plot(df)
 
 Hint: [Similar function](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#40)
 
-```{r}
+```{r, warning=FALSE}
 bar_plot2 <- function(d)
 {
   library(ggplot2)
@@ -200,7 +200,7 @@ bar_plot2(df)
 
 Hint: Combine [this function](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#37), [this function](https://bryantstats.github.io/math421/gganimate/18_writing_functions.html#40), and the function in Question 4. One way to combine is creating a new function, `quick_plot`, and call these three functions within `quic_kplot`. 
 
-```{r}
+```{r, warning=FALSE}
 quick_plot <- function(d)
 {
   library(ggplot2)
