@@ -86,12 +86,14 @@ The central limit theorem says that the sample means of any distribution follows
 Redo the above steps for the distribution of the number of values getting when rolling a die. [Hint: Use `sample(1, 6, n, replace = TRUE)` to generate samples from rolling a die]
 
 ```{r}
-n = 1000
+n = 1000000
 list <- sample(6, n, replace = TRUE)
 
+list2 <- matrix(list, nrow = 1000)
+
 library(lattice)
-mean(list)
-histogram(list)
+means <- rowMeans(list2)
+histogram(means)
 ```
 
 ### 3. (Monte Carlo Methods) Estimating Pi
