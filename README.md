@@ -34,3 +34,9 @@
 
 ### Plots
 - [Link to the plot](abc.png)
+
+### Final Project
+
+- [Final Report](final.html)
+- [Question 1](Final-Q1.html)
+- [Question 2](Final-Q2-BreastCancer.html)
