@@ -39,4 +39,6 @@
 
 - [Final Report](final.html)
 - [Question 1](Final-Q1.html)
-- [Question 2](Final-Q2-BreastCancer.html)
+- [Question 2](Final-Q2.html)
+- [Question 3](https://atess420.shinyapps.io/Final-Q3/)
+- [Question 4](https://atess420.shinyapps.io/Final-Q4/)

@@ -1,0 +1,74 @@
+
+---
+title: "Titanic - SelectInput"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    logo: logo.png
+    source_code: embed
+    social: menu
+
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(knitr)
+library(DT)
+library(shiny)
+library(packrat)
+library(rsconnect)
+
+df <- read_csv("https://bryantstats.github.io/math421/data/adult_census.csv")
+
+census_education <- unique(df$education)
+```
+
+{.sidebar}
+=======================================================================
+
+This census data set consists of 15 variables, and is a mix of both numerical and categorical variables. The target variable is the "income", since the data set is used to predict whether or not the observation's salary has greater than or less than $50k, using the variables and demographics from the adult census data. Select the input for the plots:
+
+```{r}
+selectInput(inputId = "education_input", 
+            label = h3("Select Education Level"),
+            choices = census_education, 
+            selected = 'Bachelors')
+```
+
+Main Tab 1
+=======================================================================
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Density Plot
+
+```{r}
+renderPlotly({
+  plot1 <- df %>% 
+    filter(education==input$education_input) %>% 
+    ggplot(aes(x=age, color=sex))+
+    geom_density()
+  ggplotly(plot1)
+})
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Bar Plot
+
+```{r}
+renderPlotly({
+  plot2 <- df %>% 
+    filter(education==input$education_input) %>% 
+    ggplot(aes(y=occupation, fill=sex))+
+    geom_bar()
+  ggplotly(plot2)
+})
+```

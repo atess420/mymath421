@@ -45,6 +45,16 @@ Follow these below steps to create a shiny flex dashboard then publish it.  Incl
 
 -   Install the following packages `shiny`, `packrat`, `rsconnect`.
 
+```{r}
+# install.packages('shiny')
+# install.packages('packrat')
+# install.packages('rsconnect')
+
+library(shiny)
+library(packrat)
+library(rsconnect)
+```
+
 -   Go to <https://www.shinyapps.io/> and create an account
 
 -   Go to <https://www.shinyapps.io/admin/#/dashboard>. Account -\> Tokens -\> Show -\> Show secret-\> Copy the secret code.
@@ -69,6 +79,8 @@ rsconnect::setAccountInfo(name='fall20',
 
     <https://sn904109.shinyapps.io/1_flex_select/>
 
+[Question 3](https://atess420.shinyapps.io/Final-Q3/), [Rmd](Final-Q3.Rmd)
+
 ### Question 4 - selectInput
 
 Write a shiny flex dashboard that uses `selectInput` and works with a dataset different from the titanic dataset.
@@ -78,6 +90,8 @@ Write a shiny flex dashboard that uses `selectInput` and works with a dataset di
 Note: In the above dashboard, click to Source Code to show the codes.
 
 Include the link of your dashboard here.
+
+[Question 4](https://atess420.shinyapps.io/Final-Q4/), [Rmd](Final-Q4.Rmd)
 
 ### Question 5 - checkboxGroupInput
 
