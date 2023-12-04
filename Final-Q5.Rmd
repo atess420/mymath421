@@ -1,6 +1,6 @@
 
 ---
-title: "Adult Census - SelectInput"
+title: "Adult Census - Check Box"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -19,25 +19,25 @@ library(tidyverse)
 library(plotly)
 library(knitr)
 library(DT)
-library(shiny)
-library(packrat)
-library(rsconnect)
 
 df <- read_csv("https://bryantstats.github.io/math421/data/adult_census.csv")
 
 census_education <- unique(df$education)
+
 ```
 
 {.sidebar}
 =======================================================================
 
-This census data set consists of 15 variables, and is a mix of both numerical and categorical variables. The target variable is the "income", since the data set is used to predict whether or not the observation's salary has greater than or less than $50k, using the variables and demographics from the adult census data. Select the Education Level input for the plots to see how it impacts census results:
+This census data set consists of 15 variables, and is a mix of both numerical and categorical variables. The target variable is the "income", since the data set is used to predict whether or not the observation's salary has greater than or less than $50k, using the variables and demographics from the adult census data. Select input(s) for the plots to see how income results impacts other census results:
 
 ```{r}
-selectInput(inputId = "education_input", 
-            label = h3("Select Education Level"),
-            choices = census_education, 
-            selected = 'Bachelors')
+checkboxGroupInput(inputId = "income_input", 
+                   label = h3("Income Level"),
+                   choices = unique(df$income), 
+                   inline = TRUE,
+                   selected = "<=50K")
+
 ```
 
 Main Tab 1
@@ -51,8 +51,8 @@ Column {data-width=500}
 ```{r}
 renderPlotly({
   plot1 <- df %>% 
-    filter(education==input$education_input) %>% 
-    ggplot(aes(x=age, color=sex))+
+    filter(income %in% input$income_input) %>% 
+    ggplot(aes(x=hours.per.week, color=sex))+
     geom_density()
   ggplotly(plot1)
 })
@@ -66,7 +66,7 @@ Column {data-width=500}
 ```{r}
 renderPlotly({
   plot2 <- df %>% 
-    filter(education==input$education_input) %>% 
+    filter(income %in% input$income_input) %>% 
     ggplot(aes(y=occupation, fill=sex))+
     geom_bar()
   ggplotly(plot2)
