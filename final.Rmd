@@ -149,6 +149,8 @@ We can combine different input methods into one dashboard. Write a shiny flex da
 
 Include the link of your dashboard here.
 
+[Question 9](https://atessman420.shinyapps.io/Final-Q9/), [Rmd](Final-Q9.Rmd)
+
 ------------------------------------------------------------------------
 
 ### Question 10
