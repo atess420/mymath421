@@ -44,3 +44,4 @@
 - [Question 4](https://atess420.shinyapps.io/Final-Q4/)
 - [Question 5](https://atess420.shinyapps.io/Final-Q5/)
 - [Question 6](https://atess420.shinyapps.io/Final-Q6/)
+- [Question 7](https://atess420.shinyapps.io/Final-Q7/)
