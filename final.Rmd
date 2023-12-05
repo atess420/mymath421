@@ -111,6 +111,8 @@ Write a shiny flex dashboard that uses `sliderInput` and works with a dataset di
 
 Include the link of your dashboard here.
 
+[Question 6](https://atess420.shinyapps.io/Final-Q6/), [Rmd](Final-Q6.Rmd)
+
 ### Question 7 - radioButtons
 
 Write a shiny flex dashboard that uses `radioButtons` and works with a dataset different from the titanic dataset.
