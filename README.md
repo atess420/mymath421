@@ -47,6 +47,7 @@
 - [Question 7](https://atess420.shinyapps.io/Final-Q7/)
 - [Question 8](https://atessman420.shinyapps.io/Final-Q8/)
 - [Question 9](https://atessman420.shinyapps.io/Final-Q9/)
+- [Question 10](https://atessman420.shinyapps.io/Final-Q10/)
 
 ### Data
 - [NBA Data](nba_salary2.csv)

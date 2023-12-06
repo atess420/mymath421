@@ -183,6 +183,8 @@ Write a dashboard that
 
 Include the link of your dashboard here.
 
+[Question 10](https://atessman420.shinyapps.io/Final-Q10/), [Rmd](Final-Q10.Rmd)
+
 ------------------------------------------------------------------------
 
 ### Question 11 - Presentation
